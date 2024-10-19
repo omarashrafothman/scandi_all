@@ -26,7 +26,7 @@ class Product extends Model
     // علاقة مع الـ Prices
     public function prices()
     {
-        return $this->hasMany(Prices::class, 'product_id'); // تأكد من أن 'product_id' هو العمود الصحيح
+        return $this->hasMany(Prices::class, 'product_id');
     }
     public function category()
     {

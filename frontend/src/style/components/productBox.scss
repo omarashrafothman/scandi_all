@@ -14,6 +14,22 @@
 
     }
 
+    .stockStatus {
+        position: absolute;
+        width: 50%;
+        left: 30%;
+        top: 40%;
+        transform: translateX(-50%), translateY(-50%);
+
+        p {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 0;
+            color: #8D8F9A;
+        }
+
+    }
+
     .addToCart {
 
         background-color: #5ECE7B;
@@ -32,6 +48,7 @@
         cursor: pointer;
         outline: none;
         border: none;
+
         img {
             width: 55%;
         }

@@ -75,7 +75,8 @@ export default class Cart extends Component {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                 >
-                    <span className="cartCount">{cartElements.length}</span>
+
+                    {cartElements.length <= 0 ? "" : <span className="cartCount">{cartElements.length}</span>}
                     <img src={cart} alt="cart icon" />
                 </button>
 
@@ -185,7 +186,6 @@ export default class Cart extends Component {
                                         <p>Your cart is empty.</p>
                                     )}
                                 </div>
-
                                 {cartElements.length > 0 && (
                                     <div className="totalPrice d-flex align-items-center justify-content-between">
                                         <p className="m-0">Total</p>
@@ -203,6 +203,7 @@ export default class Cart extends Component {
                                         </div>
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>

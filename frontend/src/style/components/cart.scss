@@ -7,7 +7,8 @@
     .modal-content {
         border-radius: 0;
         width: 325px;
-        max-height: 628px;
+        // max-height: 628px;
+
     }
 
     .cartHeading {
@@ -87,6 +88,7 @@
 
             }
 
+
             .productAttr {
 
                 .productColors {
@@ -96,13 +98,13 @@
                     }
 
                     .containerBlock {
-                        width: 25px;
-                        height: 25px;
+                        width: 17px !important;
+                        height: 17px !important;
                     }
 
                     input {
-                        width: 25px;
-                        height: 25px;
+                        width: 17px !important;
+                        height: 17px !important;
                     }
 
 
@@ -141,16 +143,16 @@
                             position: absolute;
                             opacity: 0;
                             cursor: pointer;
-                            width: 100%;
+
 
                         }
 
                         .checkmark {
 
-                            width: 24px;
-                            height: 24px;
+                            width: 24px !important;
+                            height: 24px !important;
                             text-align: center;
-                            font-size: 14px;
+                            font-size: 11px;
                             font-weight: 400;
 
                         }
@@ -164,7 +166,6 @@
                     }
                 }
             }
-
 
         }
 

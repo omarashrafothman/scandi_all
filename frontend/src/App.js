@@ -5,6 +5,7 @@ import CategoryPage from "./pages/category/CategoryPage";
 import ProductDetails from "./pages/productDetails/ProductDetails";
 
 
+
 function App() {
   return (
     <Router>

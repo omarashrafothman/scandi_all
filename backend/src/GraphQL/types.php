@@ -131,29 +131,12 @@ $cartType = new ObjectType([
             "type" => Type::float(),
             "resolve" => function ($cart) {
                 return $cart->cartItems->sum(function ($cartItem) {
-                    return $cartItem->product->price->amount * $cartItem->quantity;
+                    return $cartItem->price * $cartItem->quantity;
                 });
             },
         ],
+
     ],
 ]);
 
 
-// $cartType = new ObjectType([
-//     'name' => 'Cart',
-//     'fields' => function () use (&$cartItemType) {
-//         return [
-//             'id' => Type::int(),
-//             'total_price' => Type::string(),
-//             'session_id' => Type::string(),
-//             'created_at' => Type::string(),
-//             'updated_at' => Type::string(),
-//             'cart_items' => [
-//                 'type' => Type::listOf($cartItemType),
-//                 'resolve' => function ($cart) {
-//                     return $cart->cart_items;
-//                 }
-//             ],
-//         ];
-//     },
-// ]);

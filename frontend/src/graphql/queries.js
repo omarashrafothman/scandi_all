@@ -1,32 +1,68 @@
-import { gql } from '@apollo/client';
-
-export const GET_PRODUCT_DETAILS = gql`
-  query getProductDetails($sku_id: Int!) {
-    product(sku_id: $sku_id) {
-      id
-      name
-      description
-      galleries {
-        image_url
-      }
-      prices {
-        currency_symbol
-        amount
-      }
-      attributes {
-        name
-      }
+// queries.js
+export const GET_CATEGORIES = `
+    query GetCategories {
+        categories {
+            name
+        }
     }
-  }
 `;
 
-export const GET_ALL_PRODUCTS = gql`
-  query getAllProducts {
-    products {
-      id
-      name
-      price
-      category
+export const GET_ALL_PRODUCT_WITH_CATEGORIES = `
+                query GetAllProductsWithCategories {
+                    products {
+                        id
+                        name
+                        in_stock
+                        galleries {
+                            image_url
+                        }
+                        description
+                        category {
+                            id
+                            name
+                        }
+                        sku_id
+                        prices {
+                            amount
+                            currency_label
+                            currency_symbol
+                        }
+                    }
+                }
+            `;
+
+
+
+export const GET_CART = `
+    query GetCart {
+        cart(id: 1) {
+            id
+            cartItems {
+                id
+                cart_id
+                sku_id
+                quantity
+                price
+                product {
+                    id
+                    name
+                    prices {
+                        amount
+                        currency_symbol
+                    }
+                    attributes {
+                        name
+                        items {
+                            attribute_id
+                            display_value
+                            value
+                        }
+                    }
+                    galleries {
+                        image_url
+                    }
+                }
+            }
+        }
     }
-  }
 `;

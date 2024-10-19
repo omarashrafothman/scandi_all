@@ -1,42 +1,31 @@
 import React, { Component } from 'react';
 import logo from "../../assets/images/logo.png";
 import Cart from '../cart/Cart';
-
+import { CartContext } from '../../context/CartContext.js';
+import { GET_CATEGORIES } from "../../graphql/queries.js";
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
             categories: [],
-            cart: [],
-            loading: true,
-            error: null,
+
         };
     }
-
+    static contextType = CartContext;
     componentDidMount() {
+        this.context.fetchCart();
         this.fetchCategories();
-        this.fetchCart();
-
     }
 
     fetchCategories = async () => {
         try {
 
-            const query = `
-                query GetCategories {
-                    categories {
-                        name
-                    }
-                }
-            `;
-
-            // طلب fetch لواجهة GraphQL API
             const response = await fetch('http://localhost/php_projects/scandiweb_store/backend/index.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query: GET_CATEGORIES }),
             });
 
             const result = await response.json();
@@ -51,70 +40,7 @@ class Header extends Component {
         }
     };
 
-    fetchCart = async () => {
 
-        try {
-
-            const query = `
-                query GetCart {
-                    cart(id: 1) {
-                        id
-
-
-                        cartItems {
-
-                        id
-                        cart_id
-                        sku_id
-                        quantity
-                        price
-                        product {
-                            id
-                            name
-
-                            prices{
-                            amount
-                            currency_symbol
-                            }
-                             attributes {
-          name
-          items {
-            attribute_id
-            display_value
-            value
-          }
-        }
-           galleries{
-          image_url
-        }
-                        }
-                        }
-                    }
-                }
-            `;
-            const response = await fetch('http://localhost/php_projects/scandiweb_store/backend/index.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query }),
-            });
-            const result = await response.json();
-
-
-            if (result.errors) {
-                this.setState({ error: result.errors[0].message, loading: false });
-            } else {
-                this.setState({ cart: result.data.cart.cartItems, loading: false });
-            }
-
-        }
-        catch (err) {
-
-            this.setState({ error: 'Failed to fetch cart', loading: false });
-        }
-
-    }
 
 
 
@@ -123,8 +49,9 @@ class Header extends Component {
 
     render() {
         const { categories, loading, error } = this.state;
-        const { items, params } = this.props;
+        const { cart } = this.context;
 
+        const { items, params } = this.props;
         if (loading) return <p>Loading categories...</p>;
         if (error) return <p>Error: {error}</p>;
 
@@ -157,7 +84,7 @@ class Header extends Component {
                                 </a>
                             </div>
                             <div className='shoppingCart'>
-                                <Cart cartElements={this.state.cart} />
+                                <Cart cartElements={cart} />
                             </div>
                         </div>
                     </div>
