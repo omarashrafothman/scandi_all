@@ -1,5 +1,5 @@
 import React, { createContext, Component } from 'react';
-import { GET_CART } from "../graphql/queries";
+import { GET_CART, CLEAR_CART_MUTATION } from "../graphql/queries";
 export const CartContext = createContext();
 
 export class CartProvider extends Component {
@@ -31,11 +31,11 @@ export class CartProvider extends Component {
         }
     };
 
-
-    addToCart = async (skuId) => {
+    addToCart = async (skuId, color, size, capacity) => {
+        // Wrap the string variables with double quotes to ensure proper GraphQL formatting
         const ADD_TO_CART_MUTATION = `
       mutation add {
-        addToCart(sku_id: ${skuId}) {
+        addToCart(sku_id: ${skuId}, color: "${color}", size: "${size}", capacity: "${capacity}") {
           id
         }
       }
@@ -49,9 +49,15 @@ export class CartProvider extends Component {
                 },
                 body: JSON.stringify({
                     query: ADD_TO_CART_MUTATION,
-                    variables: { skuId },
+                    variables: {
+                        skuId: skuId,
+                        size: size || null,
+                        color: color || null,
+                        capacity: capacity || null
+                    },
                 }),
             });
+
             const result = await response.json();
             if (result.errors) {
                 console.error('Error adding item to cart:', result.errors);
@@ -60,6 +66,30 @@ export class CartProvider extends Component {
             }
         } catch (err) {
             console.error('Failed to add item to cart:', err);
+        }
+    };
+
+    clearCart = async () => {
+        try {
+            const response = await fetch('http://localhost/php_projects/scandiweb_store/backend/index.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: CLEAR_CART_MUTATION }),
+            });
+            const result = await response.json();
+
+            if (result.errors) {
+                console.error('Error clearing cart:', result.errors);
+            } else {
+
+                this.setState({ cart: [] }, () => {
+                    console.log('Cart cleared:', this.state.cart);
+                });
+            }
+        } catch (err) {
+            console.error('Failed to clear cart:', err);
         }
     };
 
@@ -72,6 +102,7 @@ export class CartProvider extends Component {
                     error: this.state.error,
                     fetchCart: this.fetchCart,
                     addToCart: this.addToCart,
+                    clearCart: this.clearCart
                 }}
             >
                 {this.props.children}

@@ -40,17 +40,20 @@
         top: 80%;
         right: 31px;
         border-radius: 50%;
+
         display: flex;
         align-items: center;
         justify-content: center;
         display: none;
         transition: all .5s ease-in-out;
-        cursor: pointer;
         outline: none;
         border: none;
 
+
         img {
             width: 55%;
+            text-align: center;
+            margin-top: .5rem;
         }
 
     }

@@ -101,9 +101,12 @@ $cartItemType = new ObjectType([
         return [
             'id' => Type::id(),
             'cart_id' => Type::id(),
-            'sku_id' => Type::id(), // Use Type::id() for better type consistency
+            'sku_id' => Type::id(),
             'quantity' => Type::int(),
             'price' => Type::float(),
+            'capacity' => Type::string(),
+            'size' => Type::string(),
+            'color' => Type::string(),
             'product' => [
                 'type' => $productType,
                 'resolve' => function ($cartItem) {
@@ -138,5 +141,27 @@ $cartType = new ObjectType([
 
     ],
 ]);
+
+
+$orderType = new ObjectType([
+    'name' => 'Order',
+    'fields' => [
+        'id' => Type::id(),
+        'cart_id' => Type::id(),
+        'created_at' => Type::string(),
+        'updated_at' => Type::string(),
+        "total_price" => Type::float(),
+        "status" => Type::string(),
+        'cart' => [
+            'type' => $cartType,
+            'resolve' => function ($order) {
+                return $order->cart;
+            }
+        ],
+    ],
+]);
+
+
+
 
 

@@ -43,6 +43,9 @@ export const GET_CART = `
                 sku_id
                 quantity
                 price
+                 size
+                 color
+                 capacity
                 product {
                     id
                     name
@@ -66,3 +69,8 @@ export const GET_CART = `
         }
     }
 `;
+export const CLEAR_CART_MUTATION = `
+        mutation {
+            clearCart
+        }
+    `;

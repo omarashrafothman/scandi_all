@@ -12,9 +12,13 @@ class Cart extends Model
     public $timestamps = false;
 
     //relationships
-    public function cartItems() // تغيير الاسم إلى cartItems
+    public function cartItems()
     {
         return $this->hasMany(CartItem::class, 'cart_id');
+    }
+    public function order()
+    {
+        return $this->hasMany(Order::class, 'cart_id');
     }
 
 

@@ -56,7 +56,7 @@ class CategoryPage extends Component {
             <div className='categoryPage'>
                 <div className='container py-5'>
                     <h2>{categoryName ? `${categoryName}` : 'Loading...'}</h2>
-                    {console.log(filteredProducts[0]?.in_stock)} {/* Avoid error if products array is empty */}
+
                     <div className='row'>
                         {filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import ImageSlider from '../../components/slider/ImageSlider';
+import { htmlToText } from 'html-to-text';
+import { CartContext } from '../../context/CartContext';
+import slugify from 'react-slugify';
 
 class ProductDetails extends Component {
+    static contextType = CartContext;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -9,12 +14,17 @@ class ProductDetails extends Component {
             loading: true,
             error: null,
             sku_id: Number(window.location.pathname.split("/")[2]),
+            selectedAttributes: [],
         };
     }
 
     componentDidMount() {
         this.fetchProductDetails();
     }
+
+    handleAddToCart = (skuId, color, size, capacity) => {
+        this.context.addToCart(skuId, color, size, capacity);
+    };
 
     fetchProductDetails = () => {
         const { sku_id } = this.state;
@@ -24,6 +34,7 @@ class ProductDetails extends Component {
                 query GetProductDetails {
                     product(sku_id: ${sku_id}) {
                         id
+                        sku_id
                         name
                         description
                         galleries {
@@ -52,7 +63,6 @@ class ProductDetails extends Component {
                 },
                 body: JSON.stringify({
                     query: query,
-                    variables: { sku_id: 1 },
                 }),
             })
                 .then((response) => response.json())
@@ -60,7 +70,15 @@ class ProductDetails extends Component {
                     if (data.errors) {
                         this.setState({ error: data.errors[0].message, loading: false });
                     } else {
-                        this.setState({ product: data.data.product, loading: false });
+                        const productData = data.data.product;
+                        const plainTextDescription = htmlToText(productData.description, {
+                            wordwrap: 130,
+                        });
+                        const formattedDescription = plainTextDescription.replaceAll('\\n', '');
+                        this.setState({
+                            product: { ...productData, description: formattedDescription },
+                            loading: false
+                        });
                     }
                 })
                 .catch((error) => {
@@ -69,8 +87,26 @@ class ProductDetails extends Component {
         }
     };
 
+    handleAttributeChange = (attributeName, value) => {
+        this.setState((prevState) => ({
+            selectedAttributes: {
+                ...prevState.selectedAttributes,
+                [attributeName]: value,
+            },
+        }));
+    };
+
     render() {
-        const { product, loading, error } = this.state;
+        const { product, loading, error, selectedAttributes } = this.state;
+
+        // تعيين قيمة افتراضية إذا لم تكن الخاصية موجودة
+        const capacity = selectedAttributes['Capacity'] || null;
+        const color = selectedAttributes['Color'] || null;
+        const size = selectedAttributes['Size'] || null;
+
+
+
+
 
         if (loading) return <p>Loading...</p>;
 
@@ -83,30 +119,16 @@ class ProductDetails extends Component {
             );
         }
 
-        const addToCart = () => {
-            fetch('http://localhost/php_projects/scandiweb_store/backend/index.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    query: `
-                        mutation {
-                            addToCart(sku_id: 123) {
-                                id
-                            }
-                        }
-                    `,
-                }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        };
+        // تعديل شرط التفعيل بحيث يتأكد من وجود قيم للخصائص المتاحة فقط
+        const addToCartDisabled = (product.attributes.some(attr => attr.name === 'Capacity') && !capacity) ||
+            (product.attributes.some(attr => attr.name === 'Color') && !color) ||
+            (product.attributes.some(attr => attr.name === 'Size') && !size);
 
         return (
             <div>
                 <div className='container'>
                     <div className='productDetails d-flex justify-content-around flex-wrap my-5'>
-                        <div className='productDetailsGallery'>
+                        <div className='productDetailsGallery' data-testid='product-gallery'>
                             <ImageSlider images={product.galleries} />
                         </div>
                         <div className='productDetailsContent'>
@@ -117,7 +139,7 @@ class ProductDetails extends Component {
                                 switch (attrItem.name) {
                                     case "Color":
                                         content = (
-                                            <div className='productColors' key={attrItem.id}>
+                                            <div className='productColors' key={attrItem.id} data-testid={`product-attribute-${slugify(attrItem.name)}`}>
                                                 <p>{attrItem.name}:</p>
                                                 <div className="d-flex align-items-center w-75 sizesContainer my-2">
                                                     {attrItem.items.map((colorItem) => (
@@ -126,7 +148,12 @@ class ProductDetails extends Component {
                                                             style={{ background: colorItem.value }}
                                                             key={colorItem.id}
                                                         >
-                                                            <input type="radio" name="color" value={colorItem.value} />
+                                                            <input
+                                                                type="radio"
+                                                                name={attrItem.name}
+                                                                value={colorItem.value}
+                                                                onChange={() => this.handleAttributeChange(attrItem.name, colorItem.value)}
+                                                            />
                                                             <span className="checkmark"></span>
                                                         </label>
                                                     ))}
@@ -137,11 +164,16 @@ class ProductDetails extends Component {
 
                                     default:
                                         content = (
-                                            <div className="productSizes my-2" key={attrItem.id}>
+                                            <div className="productSizes my-2" key={attrItem.id} data-testid={`product-attribute-${slugify(attrItem.name)}`}>
                                                 <p>{attrItem.name}:</p>
                                                 {attrItem.items.map((item) => (
                                                     <label className="containerBlock my-1" key={item.id}>
-                                                        <input type="radio" name={attrItem.name} value={item.value} />
+                                                        <input
+                                                            type="radio"
+                                                            name={attrItem.name}
+                                                            value={item.value}
+                                                            onChange={() => this.handleAttributeChange(attrItem.name, item.value)}
+                                                        />
                                                         <span className="checkmark">{item.display_value}</span>
                                                     </label>
                                                 ))}
@@ -160,19 +192,22 @@ class ProductDetails extends Component {
                             </div>
 
                             <div className='my-4'>
-                                <button className='cartBtn' type='submit' onClick={addToCart}>
+
+
+                                <button
+                                    className='cartBtn'
+                                    type='submit'
+                                    data-testid='add-to-cart'
+                                    onClick={() => this.handleAddToCart(product.sku_id, color, size, capacity)}
+                                    disabled={addToCartDisabled}
+                                >
                                     ADD TO CART
                                 </button>
                             </div>
 
-                            <div
-                                className='productDet'
-                                dangerouslySetInnerHTML={{
-                                    __html: product.description
-                                        ? product.description.replaceAll('\\n', '<br />')
-                                        : ''
-                                }}
-                            />
+                            <div className='productDet' data-testid='product-description'>
+                                {product.description}
+                            </div>
                         </div>
                     </div>
                 </div>

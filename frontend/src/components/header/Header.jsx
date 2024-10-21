@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from "../../assets/images/logo.png";
 import Cart from '../cart/Cart';
+import { CartProvider } from '../../context/CartContext.js';
 import { CartContext } from '../../context/CartContext.js';
 import { GET_CATEGORIES } from "../../graphql/queries.js";
 class Header extends Component {
@@ -16,6 +17,7 @@ class Header extends Component {
         this.context.fetchCart();
         this.fetchCategories();
     }
+
 
     fetchCategories = async () => {
         try {
@@ -42,14 +44,10 @@ class Header extends Component {
 
 
 
-
-
-
-
-
     render() {
         const { categories, loading, error } = this.state;
         const { cart } = this.context;
+
 
         const { items, params } = this.props;
         if (loading) return <p>Loading categories...</p>;
@@ -84,7 +82,9 @@ class Header extends Component {
                                 </a>
                             </div>
                             <div className='shoppingCart'>
+
                                 <Cart cartElements={cart} />
+
                             </div>
                         </div>
                     </div>

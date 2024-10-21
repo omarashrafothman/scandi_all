@@ -20,6 +20,8 @@
 
 
     .productDet {
+        white-space: pre-wrap;
+
         ul {
 
             list-style: circle;
@@ -165,6 +167,11 @@
     font-weight: 600;
     text-align: center;
 
+    &:disabled {
 
+        background-color: #8D8F9A;
+        border: 1px solid #8D8F9A;
+
+    }
 
 }
