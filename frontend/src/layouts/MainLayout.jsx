@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from '../components/header/Header';
-import response from "../locals/products.json";
-import { CartProvider } from '../context/CartContext';
+
 export default class MainLayout extends Component {
 
     render() {
@@ -13,7 +12,7 @@ export default class MainLayout extends Component {
         return (
             <>
 
-                <Header items={response.data.categories} params={param} />
+                <Header params={param} />
 
                 <Outlet />
             </>

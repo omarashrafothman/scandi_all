@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from "../../assets/images/logo.png";
 import Cart from '../cart/Cart';
-import { CartProvider } from '../../context/CartContext.js';
+
 import { CartContext } from '../../context/CartContext.js';
 import { GET_CATEGORIES } from "../../graphql/queries.js";
 class Header extends Component {
@@ -77,7 +77,7 @@ class Header extends Component {
                                 ))}
                             </ul>
                             <div>
-                                <a className="navbar-brand" href={items[0].to}>
+                                <a className="navbar-brand" href="/category/all">
                                     <img src={logo} alt='logo' />
                                 </a>
                             </div>
