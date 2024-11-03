@@ -1,27 +1,37 @@
 import React, { Component } from 'react';
 import ProductBox from '../../components/product/ProductBox';
 import { GET_ALL_PRODUCT_WITH_CATEGORIES } from '../../graphql/queries.js';
-
+import slugify from 'react-slugify';
+import { NavigationContext } from '../../context/NavigationProvider.js';
+import { API_BASE_URL } from "../../variables.js"
 class CategoryPage extends Component {
+    static contextType = NavigationContext;
+
     state = {
-        categoryName: null,
         products: [],
         loading: true,
         error: null,
     };
 
     componentDidMount() {
-        const categoryName = window.location.pathname.split('/')[2];
-        this.setState({ categoryName }, this.fetchProducts);
+        const { selectedParam } = this.context;
+        this.setState({ categoryName: selectedParam }, this.fetchProducts);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { selectedParam } = this.context;
+
+        if (prevState.categoryName !== selectedParam) {
+            this.setState({ categoryName: selectedParam }, this.fetchProducts);
+        }
     }
 
     fetchProducts = async () => {
+
         try {
-            const response = await fetch('http://localhost/php_projects/scandiweb_store/backend/index.php', {
+            const response = await fetch(API_BASE_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: GET_ALL_PRODUCT_WITH_CATEGORIES }),
             });
 
@@ -40,13 +50,8 @@ class CategoryPage extends Component {
     render() {
         const { categoryName, products, loading, error } = this.state;
 
-        if (loading) {
-            return <p>Loading...</p>;
-        }
-
-        if (error) {
-            return <p>Error: {error}</p>;
-        }
+        if (loading) return <p>Loading...</p>;
+        if (error) return <p>Error: {error}</p>;
 
         let filteredProducts = categoryName === 'all'
             ? products
@@ -60,7 +65,7 @@ class CategoryPage extends Component {
                     <div className='row'>
                         {filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (
-                                <div className='col-12 col-lg-4' key={product.id}>
+                                <div className='col-12 col-lg-4' key={product.id} data-testid={`product-${slugify(product.name)}`}>
                                     <ProductBox
                                         name={product.name}
                                         image={product.galleries[0]?.image_url || 'default-image-url'}

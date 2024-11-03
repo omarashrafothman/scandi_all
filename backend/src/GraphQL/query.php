@@ -64,16 +64,6 @@ $rootQuery = new ObjectType([
                     throw new \GraphQL\Error\Error('Cart not found.');
                 }
 
-                // // تحقق من أن cartItems غير فارغة قبل حساب total_price
-                // if ($cart->cartItems->isNotEmpty()) {
-                //     // احسب total_price بناءً على الكمية والسعر لكل عنصر
-                //     $totalPrice = $cart->cartItems->sum(function ($cartItem) {
-                //         return $cartItem->quantity * $cartItem->price;
-                //     });
-                //     $cart->total_price = $totalPrice;
-                // } else {
-                //     $cart->total_price = 0;
-                // }
             
                 return $cart;
             },
