@@ -6,7 +6,7 @@ import { NavigationContext } from '../../context/NavigationProvider.js';
 import { GET_CATEGORIES } from "../../graphql/queries.js";
 import { API_BASE_URL } from "../../variables.js"
 import cartImage from "../../assets/images/shopping-cart.png";
-import { NavLink } from 'react-router-dom';
+
 
 class Header extends Component {
     static contextType = CartContext;
@@ -47,7 +47,6 @@ class Header extends Component {
         event.target.setAttribute('data-testid', 'active-category-link');
         const newPath = `/${category}`;
         window.history.pushState({}, "", newPath);
-        console.log(`التنقل إلى: ${category}`);
         setSelectedParam(category);
     };
 

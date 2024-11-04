@@ -109,7 +109,7 @@ class ProductDetails extends Component {
 
     render() {
         const { product, loading, error, selectedAttributes } = this.state;
-        console.log(API_BASE_URL)
+
         const capacity = selectedAttributes['capacity'] || null;
         const color = selectedAttributes['color'] || null;
         const size = selectedAttributes['size'] || null;

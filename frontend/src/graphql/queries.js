@@ -74,3 +74,12 @@ export const CLEAR_CART_MUTATION = `
             clearCart
         }
     `;
+
+export const UPDATE_CART_QUANTITY_MUTATION = (skuId, quantity) => `
+    mutation {
+        updateCartQuantity(sku_id: ${skuId}, quantity: ${quantity}) {
+            id
+            quantity
+        }
+    }
+`;
