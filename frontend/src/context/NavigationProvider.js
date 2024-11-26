@@ -16,9 +16,12 @@ export class NavigationProvider extends Component {
 
 
         if (pathSegments.length > 2) {
+
             return pathSegments[2];
         }
+
         return pathSegments[1] || "all";
+
     };
 
     setSelectedParam = (param) => {
@@ -30,6 +33,11 @@ export class NavigationProvider extends Component {
             this.setState({ selectedParam: this.getSelectedParam() });
         };
     }
+
+
+
+
+
 
     render() {
         return (
